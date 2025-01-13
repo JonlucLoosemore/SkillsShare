@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 import pyodbc
 
 # Initialize the FastAPI app
@@ -29,9 +29,9 @@ def say_hello():
 def get_status():
     return {"status": "API is running smoothly!"}
 
-# Simple GET endpoint 3 - Read from remote MSSQL database and list all rows
+# Enhanced GET endpoint 3 - Search for a skill or return all rows
 @app.get("/db_rows")
-def get_db_rows():
+def get_db_rows(skill_name: str = Query(..., description="Skill name to search for, or 'all' to retrieve all rows")):
     # Using the provided credentials directly in the function
     server = "sql.bsite.net\MSSQL2016"
     database = "skillshare_"
@@ -41,23 +41,25 @@ def get_db_rows():
     # Connect to the remote MSSQL database using the provided credentials
     conn = connect_to_db(server, database, username, password)
     cursor = conn.cursor()
-    
-    # Query the dbo.skills table
-    try:
-        cursor.execute("SELECT * FROM dbo.skills")
-        rows = cursor.fetchall()
-        
-        # Extract column names
-        columns = [column[0] for column in cursor.description]
 
-        # Convert rows to a list of dictionaries
-        result = [dict(zip(columns, row)) for row in rows]
+    try:
+        if skill_name.lower() == "all":
+            # Query to retrieve all rows
+            cursor.execute("SELECT * FROM dbo.skills")
+        else:
+            # Query to search for a specific skill name
+            cursor.execute("SELECT * FROM dbo.skills WHERE skills_name = ?", skill_name)
+
+        rows = cursor.fetchall()
+        columns = [column[0] for column in cursor.description]  # Extract column names
+        result = [dict(zip(columns, row)) for row in rows]  # Convert rows to list of dictionaries
+
     except Exception as e:
         conn.close()
         raise HTTPException(status_code=500, detail=f"Error querying the database: {str(e)}")
-    
+
     # Close the database connection
     conn.close()
-    
+
     # Return the rows as a response
     return {"rows": result}
