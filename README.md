@@ -1,20 +1,16 @@
 # SkillsShare
 
-docker build -t skillshare-app . 
+cd to skillshare/skillshare
+and run docker-compose up --build
 
-docker run -d -p 8000:8000 --name skillshare-app-container skillshare-app
+this will build two containers 
 
+AppX - backend app
+WebX - web app
+
+check AppX is up 
 http://localhost:8000/status
 
-http://localhost:8000/list_skills?skill_name=Spanish
-(if skill name = all, then all will be returned.)
-skill names include: 
+check WebX is up
+http://localhost:3000/
 
-Web Development
-Data Science 
-Spanish
-Photography
-Graphic Design
-Project Management
-Creative Writing
-Digital Marketing

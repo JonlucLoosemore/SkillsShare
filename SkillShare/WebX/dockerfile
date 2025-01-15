@@ -1,0 +1,14 @@
+# Step 1: Use Nginx to serve the static files
+FROM nginx:alpine
+
+# Step 2: Set working directory
+WORKDIR /usr/share/nginx/html
+
+# Step 3: Copy your HTML and JS files into the container
+COPY . .
+
+# Step 4: Expose the port (default Nginx port)
+EXPOSE 80
+
+# Step 5: Start Nginx in the foreground
+CMD ["nginx", "-g", "daemon off;"]

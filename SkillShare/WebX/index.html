@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Frontend</title>
+</head>
+<body>
+    <h1>WebX Frontend</h1>
+    <button id="apiButton">Call API</button>
+    <div id="response"></div>
+
+    <script>
+        document.getElementById('apiButton').addEventListener('click', async () => {
+            try {
+                // Make API request to backend
+                const response = await fetch('http://localhost:8000/status');  // Adjust if using Docker container names
+                const data = await response.json();
+                // Display API response on the page
+                document.getElementById('response').innerHTML = JSON.stringify(data, null, 2);
+            } catch (error) {
+                console.error('Error calling API:', error);
+                // Display error message on the page
+                document.getElementById('response').innerHTML = 'Failed to fetch data from API.';
+            }
+        });
+    </script>
+</body>
+</html>

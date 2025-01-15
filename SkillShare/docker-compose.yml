@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  webx-container:
+    build:
+      context: ./WebX
+      dockerfile: dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - appx-container
+    networks:
+      - app-network
+
+  appx-container:
+    build:
+      context: ./AppX
+      dockerfile: dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
